@@ -24,7 +24,6 @@ export const ListPage = () => {
   const [list, setList] = useState<ListNode[]>(initialList);
   const [value, setValue] = useState('');
   const [index, setIndex] = useState('');
-  const [tempList, setTempList] = useState<ListNode[]>([]); 
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
 
   const deleteAtIndex = async () => {
@@ -44,8 +43,7 @@ export const ListPage = () => {
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value);
   const handleIndexChange = (e: React.ChangeEvent<HTMLInputElement>) => setIndex(e.target.value);
   const renderList = () => {
-    const currentList = tempList.length > 0 ? tempList : list;
-    const elements = currentList.map((item, index) => (
+    const elements = list.map((item, index) => (
       <Circle
         key={index}
         letter={item.value}
