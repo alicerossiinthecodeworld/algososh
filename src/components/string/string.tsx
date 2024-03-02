@@ -7,44 +7,27 @@ import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from './string.module.css'
+import { reverseStringSteps } from "./utils";
 
 export const StringComponent: React.FC = () => {
   const [word, setWord] = useState<string>('');
   const [lettersState, setLettersState] = useState<{ letter: string, state: ElementStates }[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const reverseString = async () => {
-    const lettersState = word.split('').map(letter => ({ letter: letter, state: ElementStates.Default }));
-    setIsLoading(true);
-    let letters = lettersState;
+const reverseString = async () => {
+  setIsLoading(true);
 
-    let start = 0;
-    let end = word.length - 1;
-
-    while (start < end) {
-      letters[start].state = ElementStates.Changing;
-      letters[end].state = ElementStates.Changing;
-      setLettersState([...letters]);
-      await sleep(SHORT_DELAY_IN_MS); 
-
-      [letters[start].letter, letters[end].letter] = [letters[end].letter, letters[start].letter];
-
-      letters[start].state = ElementStates.Modified;
-      letters[end].state = ElementStates.Modified;
-      setLettersState([...letters]);
+  const steps = reverseStringSteps(word);
+  console.log(steps)
+  await (async () => {
+    for (let i = 0; i < steps.length; i++) {
+      setLettersState([...steps[i]]);
       await sleep(SHORT_DELAY_IN_MS);
-
-      start++;
-      end--;
     }
+  })();
 
-    if (start === end) {
-      letters[start].state = ElementStates.Modified;
-      setLettersState([...letters]);
-    }
-    setIsLoading(false);
-  };
-
+  setIsLoading(false);
+};
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newWord = e.target.value;
     setWord(newWord);

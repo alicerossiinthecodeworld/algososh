@@ -7,6 +7,7 @@ import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
 import { sleep } from "../../utils/utils-functions";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { calculateFibonacci } from "./utils";
 
 export const FibonacciPage: React.FC = () => {
   const [sequence, setSequence] = useState<number[]>([]);
@@ -29,12 +30,6 @@ export const FibonacciPage: React.FC = () => {
     }
   };
 
-  const calculateFibonacci = (n: number): number => {
-    if (n <= 1) {
-      return n;
-    }
-    return calculateFibonacci(n - 1) + calculateFibonacci(n - 2);
-  };
   const handleFibonacciCalculation = () => {
     const inputVal = parseInt((document.querySelector('input') as HTMLInputElement).value);
     if (!isNaN(inputVal) && inputVal >= 1 && inputVal <= 19) {
