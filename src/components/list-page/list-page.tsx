@@ -1,105 +1,109 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ElementStates } from '../../types/element-states';
 import { Button } from '../ui/button/button';
 import { Circle } from '../ui/circle/circle';
 import { Input } from '../ui/input/input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
+import { LinkedList } from './linked-list';
+import { sleep } from '../../utils/utils-functions';
 
 import styles from './list-page.module.css';
-
-interface ListNode {
-  value: string;
-  next: ListNode | null;
-}
-
-const initialList: ListNode[] = [
-  { value: '0', next: null },
-  { value: '34', next: null },
-  { value: '8', next: null },
-  { value: '1', next: null },
-];
-
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
 
 export const ListPage = () => {
-  const [list, setList] = useState<ListNode[]>(initialList);
+  const [linkedList, setLinkedList] = useState(new LinkedList<string>());
+  const [listArray, setListArray] = useState<string[]>([]);
   const [value, setValue] = useState('');
   const [index, setIndex] = useState('');
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
 
-  const deleteAtIndex = async () => {
-    let indexToDelete = Number(index)
-    for (let i = 0; i <= indexToDelete; i++) {
-      setHighlightedIndex(i);
-      await new Promise(resolve => setTimeout(resolve, 500)); 
+  useEffect(() => {
+    const initialValues = ['0', '34', '8', '1'];
+    const newList = new LinkedList<string>();
+    initialValues.forEach(value => newList.addToTail(value));
+    setLinkedList(newList);
+  }, []);
+
+  useEffect(() => {
+    const items: string[] = [];
+    let current = linkedList.getHead();
+    while (current !== null) {
+      items.push(current.value);
+      current = current.next;
     }
-    setHighlightedIndex(null);
-    setList(prevList => prevList.filter((_, index) => index !== indexToDelete));
+    setListArray(items);
+  }, [linkedList]);
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
   };
 
-  const createNewNode = (value: string): ListNode => ({
-    value,
-    next: null,
-  });
-  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value);
-  const handleIndexChange = (e: React.ChangeEvent<HTMLInputElement>) => setIndex(e.target.value);
-  const renderList = () => {
-    const elements = list.map((item, index) => (
-      <Circle
-        key={index}
-        letter={item.value}
-        state={index === highlightedIndex ? ElementStates.Changing : ElementStates.Default}
-        index={index}
-        head={index === 0 ? 'head' : undefined}
-        tail={index === list.length - 1 ? 'tail' : undefined}
-      />
-    ));
-
-    return <div className={styles.sequence}>{elements}</div>;
+  const handleIndexChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIndex(e.target.value);
   };
-  const addAtHead = () => {
-    const newNode = createNewNode(value);
-    setList([newNode, ...list]);
+
+  const handleAddToHead = () => {
+    linkedList.addToHead(value);
+    setLinkedList(Object.assign(new LinkedList<string>(), linkedList));
     setValue('');
   };
 
-  const addAtTail = () => {
-    const newNode = createNewNode(value);
-    setList([...list, newNode]);
+  const handleAddToTail = () => {
+    linkedList.addToTail(value);
+    setLinkedList(Object.assign(new LinkedList<string>(), linkedList));
     setValue('');
   };
 
-  const deleteFromHead = () => {
-    setList(list.slice(1));
+  const handleDeleteFromHead = () => {
+    linkedList.deleteFromHead();
+    setLinkedList(Object.assign(new LinkedList<string>(), linkedList));
   };
 
-  const deleteFromTail = () => {
-    setList(list.slice(0, -1));
+  const handleDeleteFromTail = () => {
+    linkedList.deleteFromTail();
+    setLinkedList(Object.assign(new LinkedList<string>(), linkedList));
   };
 
-  const addAtIndex = async () => {
-    const indexToAdd = parseInt(index, 10);
-    const newValue = createNewNode(value); 
-    if (isNaN(indexToAdd) || indexToAdd < 0 || indexToAdd > list.length || value.trim() === '') {
-      alert('Пожалуйста, введите корректные данные');
-      return;
-    }
-  
-    for (let i = 0; i < indexToAdd; i++) {
+  const animateOperation = async (operation: () => void, index: number) => {
+    for (let i = 0; i <= index; i++) {
       setHighlightedIndex(i);
-      await new Promise((resolve) => setTimeout(resolve, 500)); 
+      await sleep(SHORT_DELAY_IN_MS);
     }
-
-    setList((prevList) => {
-      const newList = [...prevList];
-      newList.splice(indexToAdd, 0, newValue); 
-      return newList;
-    });
   
+    operation();
+  
+    setLinkedList(linkedList.clone());
     setValue('');
     setIndex('');
     setHighlightedIndex(null);
   };
   
+  const handleAddAtIndex = () => {
+    if (index.trim() !== '') {
+      animateOperation(() => linkedList.insertAtIndex(parseInt(index, 10), value), parseInt(index, 10));
+      setValue('');
+      setIndex('');
+    }
+  };
+
+  const handleDeleteAtIndex = () => {
+    if (index.trim() !== '') {
+      animateOperation(() => linkedList.deleteAtIndex(parseInt(index, 10)), parseInt(index, 10));
+      setIndex('');
+    }
+  };
+
+  const renderList = () => listArray.map((item, idx) => (
+    <Circle
+      key={idx}
+      letter={item}
+      state={idx === highlightedIndex ? ElementStates.Changing : ElementStates.Default}
+      index={idx}
+      head={idx === 0 ? 'head' : undefined}
+      tail={idx === listArray.length - 1 ? 'tail' : undefined}
+    />
+  ));
+
   return (
     <SolutionLayout title="Связный список">
       <div className={styles.inputZone}>
@@ -112,10 +116,10 @@ export const ListPage = () => {
           isLimitText={true}
           placeholder="Введите значение"
         />
-        <Button text="Добавить в head" onClick={addAtHead} extraClass={styles.listButton} />
-        <Button text="Добавить в tail" onClick={addAtTail} extraClass={styles.listButtons} />
-        <Button text="Удалить из head" onClick={deleteFromHead} extraClass={styles.listButtons} />
-        <Button text="Удалить из tail" onClick={deleteFromTail} extraClass={styles.listButtons} />
+        <Button text="Добавить в head" onClick={handleAddToHead} extraClass={styles.listButton} />
+        <Button text="Добавить в tail" onClick={handleAddToTail} extraClass={styles.listButton} />
+        <Button text="Удалить из head" onClick={handleDeleteFromHead} extraClass={styles.listButton} />
+        <Button text="Удалить из tail" onClick={handleDeleteFromTail} extraClass={styles.listButton} />
       </div>
       <div className={styles.inputZone}>
         <Input
@@ -125,10 +129,10 @@ export const ListPage = () => {
           onChange={handleIndexChange}
           extraClass={styles.input}
         />
-        <Button text="Добавить по индексу" onClick={addAtIndex} extraClass={styles.indexButton} />
-        <Button text="Удалить по индексу" onClick={deleteAtIndex} extraClass={styles.indexButton} />
+        <Button text="Добавить по индексу" onClick={handleAddAtIndex} extraClass={styles.indexButton} disabled={linkedList.getLength() < Number(index)} />
+        <Button text="Удалить по индексу" onClick={handleDeleteAtIndex} extraClass={styles.indexButton} disabled={linkedList.getLength() < Number(index)} />
       </div>
-      <div className={styles.listContainer}>
+      <div className={styles.sequence}>
         {renderList()}
       </div>
     </SolutionLayout>

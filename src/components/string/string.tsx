@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { ElementStates } from "../../types/element-states";
+import { sleep } from "../../utils/utils-functions";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
 import { Input } from "../ui/input/input";
@@ -10,7 +12,6 @@ export const StringComponent: React.FC = () => {
   const [word, setWord] = useState<string>('');
   const [lettersState, setLettersState] = useState<{ letter: string, state: ElementStates }[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const reverseString = async () => {
     const lettersState = word.split('').map(letter => ({ letter: letter, state: ElementStates.Default }));
@@ -24,14 +25,14 @@ export const StringComponent: React.FC = () => {
       letters[start].state = ElementStates.Changing;
       letters[end].state = ElementStates.Changing;
       setLettersState([...letters]);
-      await sleep(500); 
+      await sleep(SHORT_DELAY_IN_MS); 
 
       [letters[start].letter, letters[end].letter] = [letters[end].letter, letters[start].letter];
 
       letters[start].state = ElementStates.Modified;
       letters[end].state = ElementStates.Modified;
       setLettersState([...letters]);
-      await sleep(500);
+      await sleep(SHORT_DELAY_IN_MS);
 
       start++;
       end--;

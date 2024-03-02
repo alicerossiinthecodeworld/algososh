@@ -5,13 +5,15 @@ import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import styles from "./fibonacci-page.module.css";
 import { Circle } from "../ui/circle/circle";
 import { ElementStates } from "../../types/element-states";
+import { sleep } from "../../utils/utils-functions";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 
 export const FibonacciPage: React.FC = () => {
   const [sequence, setSequence] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isValidInput, setIsValidInput] = useState<boolean>(true);
 
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+ 
   const fibonacciAsync = async (n: number) => {
     if (n <= 19){
       setIsLoading(true);
@@ -19,7 +21,7 @@ export const FibonacciPage: React.FC = () => {
       let fibSequence: number[] = [1];
       setSequence(fibSequence.slice());
       for (let i = 2; i <= n + 1; i++) {
-        await sleep(500);
+        await sleep(SHORT_DELAY_IN_MS);
         fibSequence = [...fibSequence, calculateFibonacci(i)];
         setSequence(fibSequence);
       }

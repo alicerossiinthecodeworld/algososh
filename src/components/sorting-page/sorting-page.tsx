@@ -5,6 +5,8 @@ import { RadioInput } from '../ui/radio-input/radio-input';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import styles from './sorting-page.module.css';
 import { ElementStates } from '../../types/element-states';
+import { DELAY_IN_MS } from '../../constants/delays';
+import { sleep } from '../../utils/utils-functions';
 
 export const SortingPage= () => {
   const [selectedSortingMethod, setSelectedSortingMethod] = useState('selection');
@@ -34,7 +36,7 @@ export const SortingPage= () => {
       let minOrMaxIndex = i;
       for (let j = i + 1; j < len; j++) {
         setComparingIndexes([minOrMaxIndex, j]);
-        await sleep();
+        await sleep(DELAY_IN_MS);
         const shouldSwap = direction === 'ascending' ? newArr[j] < newArr[minOrMaxIndex] : newArr[j] > newArr[minOrMaxIndex];
         if (shouldSwap) {
           minOrMaxIndex = j;
@@ -42,7 +44,7 @@ export const SortingPage= () => {
       }
       if (minOrMaxIndex !== i) {
         [newArr[i], newArr[minOrMaxIndex]] = [newArr[minOrMaxIndex], newArr[i]];
-        await sleep();
+        await sleep(DELAY_IN_MS);
       }
       setSortedIndexes((prev) => [...prev, i]);
       setCurrArr([...newArr]);
@@ -53,21 +55,20 @@ export const SortingPage= () => {
     for (let i = 0; i < len; i++) {
       for (let j = 0; j < len - i - 1; j++) {
         setComparingIndexes([j, j + 1]);
-        await sleep();
+        await sleep(DELAY_IN_MS);
         const shouldSwap = direction === 'ascending' ? newArr[j] > newArr[j + 1] : newArr[j] < newArr[j + 1];
         if (shouldSwap) {
           let temp = newArr[j];
           newArr[j] = newArr[j + 1];
           newArr[j + 1] = temp;
 
-          await sleep();
+          await sleep(DELAY_IN_MS);
           setCurrArr([...newArr]);
         }
       }
       setSortedIndexes(prev => [...prev, len - i - 1]);
     }
   }
-  const sleep = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms));
 
   const sortArray = async (direction: 'ascending' | 'descending') => {
     setIsSorting(true);

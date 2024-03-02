@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { ElementStates } from "../../types/element-states";
 import { Button } from "../ui/button/button";
 import { Circle } from "../ui/circle/circle";
@@ -28,7 +29,7 @@ export const QueuePage: React.FC = () => {
         }));
         setQueue(newQueue);
         setIsProcessing(false);
-      }, 500); 
+      }, SHORT_DELAY_IN_MS); 
     }
   };
 
@@ -41,7 +42,7 @@ export const QueuePage: React.FC = () => {
       setInputValue('');
       setTimeout(() => {
         setIsProcessing(false);
-      }, 500);
+      }, SHORT_DELAY_IN_MS);
     }
   };
 
