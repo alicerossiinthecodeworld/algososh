@@ -15,7 +15,7 @@ describe('string Component', () => {
     testStringReverse('fsdfad', 'dafdsf')
   });
   test('correctly reverses uneven string', () => {
-    testStringReverse('fsdfa', 'afdsf')
+    testStringReverse('Hello', 'olleH')
   });
   test('correctly reverses single character string', () => {
     testStringReverse('1', '1')

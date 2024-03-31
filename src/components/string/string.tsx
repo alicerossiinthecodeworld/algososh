@@ -41,6 +41,7 @@ const reverseString = async () => {
           maxLength={11} 
           isLimitText={true} 
           onChange={handleChange}
+          data-cy = 'string_input'
         />
         <Button 
           type="button" 
@@ -48,9 +49,10 @@ const reverseString = async () => {
           disabled={word.length === 0 || isLoading} 
           onClick={reverseString} 
           isLoader={isLoading}
+          data-cy = 'string_button'
         />
      </div>
-     <div className={styles.sequence}>
+     <div className={styles.sequence} data-cy = {'letters'}>
 
        {lettersState.map((item, index) => (
           <Circle

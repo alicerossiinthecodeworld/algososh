@@ -12,7 +12,7 @@ import { calculateFibonacci } from "./utils";
 export const FibonacciPage: React.FC = () => {
   const [sequence, setSequence] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isValidInput, setIsValidInput] = useState<boolean>(true);
+  const [isValidInput, setIsValidInput] = useState<boolean>(false);
 
  
   const fibonacciAsync = async (n: number) => {
@@ -43,9 +43,9 @@ export const FibonacciPage: React.FC = () => {
   return (
     <SolutionLayout title="Последовательность Фибоначчи">
       <div className={styles.inputZone}>
-        <Input isLimitText={true} maxLength={2} type={'number'} min={1} max={19}   onChange={(e) => {
-    const target = e.target as HTMLInputElement; 
-    setIsValidInput(!isNaN(parseInt(target.value)) && parseInt(target.value) >= 1 && parseInt(target.value) <= 19);
+        <Input data-cy={"fibonacci-input"} isLimitText={true} maxLength={2} type={'number'} min={1} max={19}   onChange={(e) => {
+      const target = e.target as HTMLInputElement; 
+      setIsValidInput(!isNaN(parseInt(target.value)) && parseInt(target.value) >= 1 && parseInt(target.value) <= 19);
   }} />
         <Button
           text={"Рассчитать"}
@@ -53,16 +53,17 @@ export const FibonacciPage: React.FC = () => {
           onClick={handleFibonacciCalculation}
           isLoader={isLoading}
           disabled={isLoading||!isValidInput}
+          data-cy={'fibonacci-button'}
         />
       </div>
-      <div className={styles.sequence}>
+      <div className={styles.sequence} data-cy={"fibonacci-numbers"}>
         {sequence.map((num, index) => (
           <Circle
             key={index}
             letter={num.toString()}
             state={ElementStates.Default}
-            index={index}
             isSmall={false}
+            index={index}
             extraClass={styles.circleMargin}
           />
         ))}
