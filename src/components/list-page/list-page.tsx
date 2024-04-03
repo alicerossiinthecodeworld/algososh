@@ -115,11 +115,25 @@ export const ListPage = () => {
           extraClass={styles.input}
           isLimitText={true}
           placeholder="Введите значение"
+          data-cy={"list-value-input"}
         />
-        <Button text="Добавить в head" onClick={handleAddToHead} extraClass={styles.listButton} />
-        <Button text="Добавить в tail" onClick={handleAddToTail} extraClass={styles.listButton} />
-        <Button text="Удалить из head" onClick={handleDeleteFromHead} extraClass={styles.listButton} />
-        <Button text="Удалить из tail" onClick={handleDeleteFromTail} extraClass={styles.listButton} />
+        <Button text="Добавить в head" onClick={handleAddToHead} extraClass={styles.listButton} 
+        data-cy={'list-add-head-button'}
+        disabled={value==''}/>
+        <Button text="Добавить в tail" 
+        onClick={handleAddToTail} extraClass={styles.listButton}
+        data-cy={'list-add-tail-button'}
+        disabled={value==''}/>
+        <Button 
+        data-cy={'list-delete-head-button'}
+        text="Удалить из head"
+        onClick={handleDeleteFromHead} 
+        extraClass={styles.listButton} 
+        disabled={listArray.length===0}/>
+        <Button 
+        data-cy={'list-delete-tail-button'}
+        text="Удалить из tail" onClick={handleDeleteFromTail} extraClass={styles.listButton} 
+        disabled={listArray.length===0}/>
       </div>
       <div className={styles.inputZone}>
         <Input
@@ -128,11 +142,15 @@ export const ListPage = () => {
           value={index}
           onChange={handleIndexChange}
           extraClass={styles.input}
+          data-cy={"list-index-input"}
         />
-        <Button text="Добавить по индексу" onClick={handleAddAtIndex} extraClass={styles.indexButton} disabled={linkedList.getLength() < Number(index)} />
-        <Button text="Удалить по индексу" onClick={handleDeleteAtIndex} extraClass={styles.indexButton} disabled={linkedList.getLength() < Number(index)} />
+        <Button 
+        data-cy={'add-by-index-button'}
+        text="Добавить по индексу" onClick={handleAddAtIndex} extraClass={styles.indexButton} disabled={linkedList.getLength() < Number(index)||index==''||value==''} />
+        <Button
+         data-cy={'delete-by-index-button'} text="Удалить по индексу" onClick={handleDeleteAtIndex} extraClass={styles.indexButton} disabled={linkedList.getLength() < Number(index)||index==''} />
       </div>
-      <div className={styles.sequence}>
+      <div className={styles.sequence} data-cy={"list"}>
         {renderList()}
       </div>
     </SolutionLayout>

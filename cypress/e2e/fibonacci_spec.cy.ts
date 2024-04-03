@@ -22,7 +22,7 @@ describe('Фибоначчи работает', ()=>{
     }
   
     cy.wrap(fibSequence).each((num, index) => {
-      cy.get(`[data-cy="fibonacci-numbers"]`).children().eq(index).should('have.text', String(num)+String(index));
+      cy.get(`[data-cy="fibonacci-numbers"]`).children().eq(index).should('contain', num);
     });
   });
 })

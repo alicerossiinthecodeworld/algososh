@@ -73,6 +73,7 @@ export const QueuePage: React.FC = () => {
           onChange={handleChange}
           isLimitText={true}
           disabled={isProcessing}
+          data-cy={"queue-input"}
         />
         <Button
           type="submit"
@@ -80,12 +81,14 @@ export const QueuePage: React.FC = () => {
           onClick={addQueue}
           isLoader={isProcessing}
           disabled={!inputValue || isProcessing || queue.length >= 7}
+          data-cy = {"queue-add-button"}
         />
         <Button
           type="button"
           text="Удалить"
           onClick={deleteQueue}
           disabled={isProcessing || queue.length === 0}
+          data-cy = {"queue-delete-button"}
         />
         <Button
           type="button"
@@ -93,9 +96,10 @@ export const QueuePage: React.FC = () => {
           extraClass={styles.clearButton}
           onClick={clear}
           disabled={isProcessing || queue.length === 0}
+          data-cy = {"queue-clear-button"}
         />
       </div>
-      <div className={styles.sequence}>
+      <div className={styles.sequence} data-cy={'queue-element'}>
         {renderQueue()}
       </div>
     </SolutionLayout>

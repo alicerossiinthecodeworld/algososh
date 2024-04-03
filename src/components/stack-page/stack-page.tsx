@@ -47,6 +47,7 @@ export const StackPage: React.FC = () => {
           onChange={handleChange}
           isLimitText={true}
           disabled={isProcessing}
+          data-cy={"stack-input"}
         />
         <Button
           type="submit"
@@ -54,12 +55,14 @@ export const StackPage: React.FC = () => {
           onClick={addStack}
           isLoader={isProcessing}
           disabled={!inputValue || isProcessing} 
+          data-cy={"stack-add-button"}
         />
         <Button
           type="button"
           text="Удалить"
           onClick={deleteStack}
           disabled={isProcessing || stack.length === 0}
+          data-cy={"stack-delete-button"}
         />
         <Button
           type="button"
@@ -67,9 +70,10 @@ export const StackPage: React.FC = () => {
           extraClass={styles.clearButton}
           onClick={clear}
           disabled={isProcessing || stack.length === 0}
+          data-cy={"stack-clear-button"}
         />
       </div>
-      <div className={styles.sequence}>
+      <div className={styles.sequence} data-cy={"stack-element"}>
         {stack.map((item, index) => (
           <Circle
             key={index}
